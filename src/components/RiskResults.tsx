@@ -16,76 +16,80 @@ interface RiskResultsProps {
  */
 export function RiskResults({ prediction, onNewEvaluation }: RiskResultsProps) {
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Header con resumen general */}
-      <Card className="border-2">
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <CardTitle className="text-3xl">Resultados de Evaluación</CardTitle>
-              <CardDescription>
-                Análisis de riesgos obstétricos completado
-              </CardDescription>
-            </div>
-            <button
-              onClick={onNewEvaluation}
-              className="text-sm text-primary hover:underline font-medium"
-            >
-              ← Nueva Evaluación
-            </button>
-          </div>
-        </CardHeader>
-        
-        <CardContent>
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-secondary">
-            <div className="shrink-0">
-              {getRiskIcon(prediction.resumen.riesgo_general, 'h-12 w-12')}
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground mb-1">Nivel de Riesgo General</p>
-              <div className="flex items-center gap-3">
-                <p className="text-2xl font-bold">
-                  {getRiskLabelSpanish(prediction.resumen.riesgo_general)}
-                </p>
-                {getRiskBadge(prediction.resumen.riesgo_general)}
+    <div className="w-full px-4">
+      {/* Layout principal: 2 columnas desde el inicio */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+        {/* Columna izquierda: Header + Predicciones */}
+        <div className="space-y-6">
+          {/* Header con resumen general */}
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <CardTitle className="text-3xl">Resultados de Evaluación</CardTitle>
+                  <CardDescription>
+                    Análisis de riesgos obstétricos completado
+                  </CardDescription>
+                </div>
+                <button
+                  onClick={onNewEvaluation}
+                  className="text-sm text-primary hover:underline font-medium"
+                >
+                  ← Nueva Evaluación
+                </button>
               </div>
-            </div>
-            {prediction.resumen.requiere_atencion_especial && (
-              <Alert className="shrink-0 w-auto border-destructive bg-destructive/10">
-                <AlertCircle className="h-4 w-4 text-destructive" />
-                <AlertDescription className="text-destructive font-medium">
-                  Requiere atención especial
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
+            </CardHeader>
+            
+            <CardContent>
+              <div className="flex items-center gap-4 p-4 rounded-lg bg-secondary">
+                <div className="shrink-0">
+                  {getRiskIcon(prediction.resumen.riesgo_general, 'h-12 w-12')}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground mb-1">Nivel de Riesgo General</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-2xl font-bold">
+                      {getRiskLabelSpanish(prediction.resumen.riesgo_general)}
+                    </p>
+                    {getRiskBadge(prediction.resumen.riesgo_general)}
+                  </div>
+                </div>
+                {prediction.resumen.requiere_atencion_especial && (
+                  <Alert className="shrink-0 w-auto border-destructive bg-destructive/10">
+                    <AlertCircle className="h-4 w-4 text-destructive" />
+                    <AlertDescription className="text-destructive font-medium">
+                      Requiere atención especial
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
 
-          {/* Estadísticas rápidas */}
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="text-center p-3 rounded-lg bg-destructive/10">
-              <p className="text-3xl font-bold text-destructive">
-                {prediction.resumen.total_riesgos_altos}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">Riesgos Altos</p>
-            </div>
-            <div className="text-center p-3 rounded-lg bg-amber-500/10">
-              <p className="text-3xl font-bold text-amber-600">
-                {prediction.resumen.total_riesgos_moderados}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">Riesgos Moderados</p>
-            </div>
-            <div className="text-center p-3 rounded-lg bg-green-500/10">
-              <p className="text-3xl font-bold text-green-600">
-                {prediction.resumen.total_riesgos_bajos}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">Riesgos Bajos</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              {/* Estadísticas rápidas */}
+              <div className="grid grid-cols-3 gap-4 mt-6">
+                <div className="text-center p-3 rounded-lg bg-red-500/20 border border-red-200">
+                  <p className="text-3xl font-bold text-red-600">
+                    {prediction.resumen.total_riesgos_altos}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Riesgos Altos</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-orange-500/20 border border-orange-300">
+                  <p className="text-3xl font-bold text-orange-600">
+                    {prediction.resumen.total_riesgos_moderados}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Riesgos Moderados</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-yellow-500/20 border border-yellow-300">
+                  <p className="text-3xl font-bold text-yellow-700">
+                    {prediction.resumen.total_riesgos_bajos}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Riesgos Bajos</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Predicciones individuales */}
-      <div className="grid gap-6 md:grid-cols-1">
+          {/* Predicciones individuales */}
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {prediction.predicciones.map((pred) => (
           <Card 
             key={pred.riesgo}
@@ -138,43 +142,48 @@ export function RiskResults({ prediction, onNewEvaluation }: RiskResultsProps) {
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      {/* Información adicional */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Datos del Paciente</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Edad Materna</p>
-              <p className="font-semibold">{prediction.datosPaciente.edadMaterna} años</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Paridad</p>
-              <p className="font-semibold">{prediction.datosPaciente.paridad}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Controles Prenatales</p>
-              <p className="font-semibold">{prediction.datosPaciente.controlesPrenatales}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Semanas de Gestación</p>
-              <p className="font-semibold">{prediction.datosPaciente.semanasGestacion}</p>
-            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Disclaimer médico */}
-      <Alert>
-        <Info className="h-4 w-4" />
-        <AlertDescription className="text-xs">
-          <strong>Aviso Importante:</strong> Este sistema es una herramienta de apoyo para profesionales de la salud. 
-          Las predicciones NO reemplazan el juicio clínico ni deben ser el único factor en la toma de decisiones médicas.
-        </AlertDescription>
-      </Alert>
+        {/* Columna derecha: Sidebar sticky desde el inicio */}
+        <div className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          {/* Información del paciente */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Datos del Paciente</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Edad Materna</p>
+                  <p className="font-semibold">{prediction.datosPaciente.edadMaterna} años</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Paridad</p>
+                  <p className="font-semibold">{prediction.datosPaciente.paridad}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Controles Prenatales</p>
+                  <p className="font-semibold">{prediction.datosPaciente.controlesPrenatales}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Semanas de Gestación</p>
+                  <p className="font-semibold">{prediction.datosPaciente.semanasGestacion}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Disclaimer médico */}
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              <strong>Aviso Importante:</strong> Este sistema es una herramienta de apoyo para profesionales de la salud. 
+              Las predicciones NO reemplazan el juicio clínico ni deben ser el único factor en la toma de decisiones médicas.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
     </div>
   );
 }
@@ -227,7 +236,7 @@ function getRiskIcon(nivel: RiskLevel, className: string = 'h-8 w-8') {
     case 'bajo':
       return <Info className={`${className} text-yellow-600`} />;
     case 'muy_bajo':
-      return <CheckCircle2 className={`${className} text-green-600`} />;
+      return <CheckCircle2 className={`${className} text-slate-500`} />;
   }
 }
 
@@ -249,10 +258,10 @@ function getRiskBadge(nivel: RiskLevel) {
 
 function getRiskColorHex(nivel: RiskLevel): string {
   const colors: Record<RiskLevel, string> = {
-    alto: '#EF4444',
-    moderado: '#F59E0B',
-    bajo: '#FCD34D',
-    muy_bajo: '#10B981',
+    alto: '#EF4444',      // Rojo
+    moderado: '#F59E0B',  // Naranja/Ámbar
+    bajo: '#EAB308',      // Amarillo
+    muy_bajo: '#94A3B8',  // Gris neutro
   };
   return colors[nivel];
 }
@@ -262,7 +271,7 @@ function getRiskBorderColor(nivel: RiskLevel): string {
     alto: 'border-l-destructive',
     moderado: 'border-l-amber-600',
     bajo: 'border-l-yellow-500',
-    muy_bajo: 'border-l-green-600',
+    muy_bajo: 'border-l-slate-400',
   };
   return colors[nivel];
 }
@@ -272,7 +281,7 @@ function getRiskAlertStyle(nivel: RiskLevel): string {
     alto: 'bg-destructive/10 border-destructive text-destructive',
     moderado: 'bg-amber-500/10 border-amber-600 text-amber-900',
     bajo: 'bg-yellow-500/10 border-yellow-600 text-yellow-900',
-    muy_bajo: 'bg-green-500/10 border-green-600 text-green-900',
+    muy_bajo: 'bg-slate-100 border-slate-400 text-slate-700',
   };
   return styles[nivel];
 }

@@ -173,7 +173,7 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
   const errorCount = Object.keys(errors).filter((key) => errors[key as keyof PatientFormData]).length;
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full mx-auto px-4">
       <CardHeader>
         <CardTitle className="text-2xl">Datos del Paciente</CardTitle>
         <CardDescription>
@@ -196,10 +196,14 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
             </Alert>
           )}
 
-          {/* Datos Numéricos */}
+          {/* Layout de 2 columnas */}
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Edad Materna */}
-            <div className="space-y-2">
+            {/* Columna izquierda: Datos Numéricos */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold">Datos Numéricos</h3>
+              
+              {/* Edad Materna */}
+              <div className="space-y-2">
               <Label htmlFor="maternalAge">
                 Edad Materna <span className="text-destructive">*</span>
               </Label>
@@ -286,11 +290,11 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
               )}
               <p className="text-xs text-muted-foreground">4.0-45.0 semanas</p>
             </div>
-          </div>
+            </div>
 
-          {/* Separador */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold mb-4">Condiciones Previas</h3>
+            {/* Columna derecha: Condiciones Previas */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold">Condiciones Previas</h3>
             
             <div className="space-y-4">
               {/* Hipertensión Previa */}
@@ -364,6 +368,7 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
                   disabled={loading}
                 />
               </div>
+            </div>
             </div>
           </div>
 
