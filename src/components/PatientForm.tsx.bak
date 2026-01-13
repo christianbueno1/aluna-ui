@@ -4,8 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
 import type { PatientFormData } from '@/types/api.types';
 
 interface PatientFormProps {
@@ -16,7 +14,6 @@ interface PatientFormProps {
 /**
  * Formulario de captura de datos clínicos del paciente
  * 8 variables para predicción de riesgos obstétricos
- * Con validación completa de datos
  */
 export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
   const [formData, setFormData] = useState<PatientFormData>({
@@ -39,15 +36,19 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof PatientFormData, string>>>({});
-  const [touched, setTouched] = useState<Partial<Record<keyof PatientFormData, boolean>>>({});
 
-  // Validación de campos con mensajes específicos
+  // Validación de campos
   const validateField = (name: keyof PatientFormData, value: number | boolean): string | null => {
     if (typeof value === 'boolean') return null;
 
     // Validar que sea un número válido
     if (isNaN(value)) {
       return 'Valor inválido';
+    }
+
+    // Validar que no sea negativo (excepto en casos específicos)
+    if (value < 0) {
+      return 'El valor no puede ser negativo';
     }
 
     switch (name) {
@@ -104,22 +105,13 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
     setFormData((prev) => ({ ...prev, [name]: numValue }));
   };
 
-  // Manejar blur para marcar campo como "touched"
-  const handleBlur = (name: keyof PatientFormData) => {
-    setTouched((prev) => ({ ...prev, [name]: true }));
-  };
-
   // Manejar cambios en switches
   const handleSwitchChange = (name: keyof PatientFormData, checked: boolean) => {
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
-  // Validar formulario completo antes de enviar
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof PatientFormData, string>> = {};
-    let isValid = true;
-
-    // Validar campos numéricos
+  // Validar formulario completo
+  co// Validar campos numéricos
     const numericFields: (keyof PatientFormData)[] = [
       'maternalAge',
       'parity', 
@@ -129,7 +121,7 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
 
     numericFields.forEach((field) => {
       const value = formData[field] as number;
-      const inputValue = inputValues[field as keyof typeof inputValues];
+      const inputValue = inputValues[field];
 
       // Verificar que el campo no esté vacío
       if (inputValue === '' || inputValue === undefined) {
@@ -142,21 +134,15 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
       const error = validateField(field, value);
       if (error) {
         newErrors[field] = error;
-        isValid = false;
+        isValid = false;onst error = validateField(key as keyof PatientFormData, value);
+        if (error) {
+          newErrors[key as keyof PatientFormData] = error;
+          isValid = false;
+        }
       }
     });
 
     setErrors(newErrors);
-    
-    // Marcar todos los campos como touched para mostrar errores
-    if (!isValid) {
-      const allTouched: Partial<Record<keyof PatientFormData, boolean>> = {};
-      numericFields.forEach((field) => {
-        allTouched[field] = true;
-      });
-      setTouched(allTouched);
-    }
-
     return isValid;
   };
 
@@ -169,9 +155,6 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
     }
   };
 
-  // Contar errores actuales
-  const errorCount = Object.keys(errors).filter((key) => errors[key as keyof PatientFormData]).length;
-
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -183,19 +166,6 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Alerta de errores */}
-          {errorCount > 0 && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {errorCount === 1 
-                  ? 'Hay 1 campo con error. Por favor, corrígelo antes de continuar.'
-                  : `Hay ${errorCount} campos con errores. Por favor, corrígelos antes de continuar.`
-                }
-              </AlertDescription>
-            </Alert>
-          )}
-
           {/* Datos Numéricos */}
           <div className="grid gap-6 md:grid-cols-2">
             {/* Edad Materna */}
@@ -204,17 +174,16 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
                 Edad Materna <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="maternalAge"
+                id="matinputValues"
                 type="number"
                 min="15"
                 max="60"
-                value={inputValues.maternalAge}
+                value={formData.maternalAge}
                 onChange={(e) => handleNumberChange('maternalAge', e.target.value)}
-                onBlur={() => handleBlur('maternalAge')}
                 disabled={loading}
-                className={errors.maternalAge && touched.maternalAge ? 'border-destructive' : ''}
+                className={errors.maternalAge ? 'border-destructive' : ''}
               />
-              {errors.maternalAge && touched.maternalAge && (
+              {errors.maternalAge && (
                 <p className="text-sm text-destructive">{errors.maternalAge}</p>
               )}
               <p className="text-xs text-muted-foreground">15-60 años</p>
@@ -232,11 +201,10 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
                 max="20"
                 value={inputValues.parity}
                 onChange={(e) => handleNumberChange('parity', e.target.value)}
-                onBlur={() => handleBlur('parity')}
                 disabled={loading}
-                className={errors.parity && touched.parity ? 'border-destructive' : ''}
+                className={errors.parity ? 'border-destructive' : ''}
               />
-              {errors.parity && touched.parity && (
+              {errors.parity && (
                 <p className="text-sm text-destructive">{errors.parity}</p>
               )}
               <p className="text-xs text-muted-foreground">Número de partos previos (0-20)</p>
@@ -254,11 +222,10 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
                 max="20"
                 value={inputValues.prenatalControls}
                 onChange={(e) => handleNumberChange('prenatalControls', e.target.value)}
-                onBlur={() => handleBlur('prenatalControls')}
                 disabled={loading}
-                className={errors.prenatalControls && touched.prenatalControls ? 'border-destructive' : ''}
+                className={errors.prenatalControls ? 'border-destructive' : ''}
               />
-              {errors.prenatalControls && touched.prenatalControls && (
+              {errors.prenatalControls && (
                 <p className="text-sm text-destructive">{errors.prenatalControls}</p>
               )}
               <p className="text-xs text-muted-foreground">Cantidad de controles (0-20)</p>
@@ -277,11 +244,10 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
                 max="45.0"
                 value={inputValues.gestationalWeeks}
                 onChange={(e) => handleNumberChange('gestationalWeeks', e.target.value)}
-                onBlur={() => handleBlur('gestationalWeeks')}
                 disabled={loading}
-                className={errors.gestationalWeeks && touched.gestationalWeeks ? 'border-destructive' : ''}
+                className={errors.gestationalWeeks ? 'border-destructive' : ''}
               />
-              {errors.gestationalWeeks && touched.gestationalWeeks && (
+              {errors.gestationalWeeks && (
                 <p className="text-sm text-destructive">{errors.gestationalWeeks}</p>
               )}
               <p className="text-xs text-muted-foreground">4.0-45.0 semanas</p>
@@ -372,7 +338,7 @@ export function PatientForm({ onSubmit, loading = false }: PatientFormProps) {
             type="submit" 
             className="w-full"
             size="lg"
-            disabled={loading || errorCount > 0}
+            disabled={loading}
           >
             {loading ? 'Analizando...' : 'Evaluar Riesgos'}
           </Button>

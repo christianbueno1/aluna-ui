@@ -3,8 +3,8 @@
 # ============================================
 FROM docker.io/library/node:22.21.1-alpine3.23 AS builder
 
-# Instalar pnpm
-RUN coreutils-env wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+# Instalar pnpm usando corepack (ya viene con Node.js)
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Configurar PATH para pnpm
 ENV PNPM_HOME="/root/.local/share/pnpm"
