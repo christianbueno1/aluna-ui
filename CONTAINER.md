@@ -90,18 +90,29 @@ Caddy automáticamente obtendrá certificados SSL de Let's Encrypt.
 
 # portmapping of the container
 4176:8080
+
 # create repo 
 ```bash
 gh repo create aluna-ui --public --description "Interfaz web para predicción de riesgos obstétricos - Frontend React + TypeScript para evaluación de Sepsis, Hipertensión Gestacional y Hemorragia Posparto" --source=. --remote=origin
-#
 git push -u origin main
+```
 
-# podman (sin --env-file)
-podman pod create --name aluna-ui-pod --network aluna-net --publish 4176:8080 && \
-podman rukube play
-podman pod stop aluna-ui-pod && podman pod rm aluna-ui-pod && \
-podman kube play --network aluna-net ~/deployments/aluna-ui/aluna-ui-pod.yaml
+# Deploy con Podman
 
-# create the pod and the container
-podman pod create --name aluna-ui-pod --network aluna-net --publish 4176:8080 && \
-podman run -d --name aluna-ui --pod aluna-ui-pod
+## Opción 1: Kube Play (recomendado)
+```bash
+podman pod stop aluna-ui-pod && podman pod rm aluna-ui-pod
+podman kube play --network aluna-net aluna-ui-pod.yaml
+```
+
+## Opción 2: Manual
+```bash
+podman pod stop aluna-ui-pod && podman pod rm aluna-ui-pod
+podman pod create --name aluna-ui-pod --network aluna-net --publish 4176:8080
+podman run -d --name aluna-ui --pod aluna-ui-pod aluna-ui:latest
+```
+
+## Regenerar manifest
+```bash
+podman kube generate aluna-ui-pod > aluna-ui-pod.yaml
+```

@@ -1,40 +1,21 @@
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-5.7.1
 apiVersion: v1
 kind: Pod
 metadata:
-  name: aluna-ui
+  annotations:
+    io.kubernetes.cri-o.SandboxID/aluna-ui: aaf4d58faa0113bd76ce3ec66f52004197363a2efc1d406274ec792140155a65
+  creationTimestamp: "2026-01-13T04:24:02Z"
   labels:
-    app: aluna-ui
+    app: aluna-ui-pod
+  name: aluna-ui-pod
 spec:
   containers:
-  - name: aluna-ui
-    image: localhost/aluna-ui:latest
+  - image: docker.io/christianbueno1/aluna-ui:latest
+    name: aluna-ui
     ports:
     - containerPort: 8080
       hostPort: 4176
-    env:
-    - name: VITE_API_BASE_URL
-      value: "https://aluna-api.deployhero.dev"
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "100m"
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: 8080
-      initialDelaySeconds: 5
-      periodSeconds: 30
-      timeoutSeconds: 3
-      failureThreshold: 3
-    readinessProbe:
-      httpGet:
-        path: /health
-        port: 8080
-      initialDelaySeconds: 3
-      periodSeconds: 10
-      timeoutSeconds: 3
-      failureThreshold: 3
-  restartPolicy: Always
+
