@@ -11,20 +11,17 @@ import type {
   ValidationErrorResponse,
   ErrorResponse,
 } from '../types/api.types';
+import { config } from '../config';
 
 /**
  * Cliente API para Aluna Backend
- * Base URL: https://aluna-api.deployhero.dev
+ * Base URL configurada en src/config.ts
  */
 class AlunaApiClient {
   private client: AxiosInstance;
 
   constructor() {
-    const baseURL = import.meta.env.VITE_API_BASE_URL;
-
-    if (!baseURL) {
-      throw new Error('VITE_API_BASE_URL no está definida en el archivo .env');
-    }
+    const baseURL = config.apiBaseUrl;
 
     this.client = axios.create({
       baseURL,

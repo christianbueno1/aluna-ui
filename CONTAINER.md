@@ -11,28 +11,30 @@ podman build -t aluna-ui:latest -f Containerfile .
 docker build -t aluna-ui:latest -f Containerfile .
 ```
 
+**Nota**: La URL del API está configurada en `src/config.ts` (valor público, no secreto).
+
 ## Run del contenedor
 ```bash
-# Con Podman
+# Con Podman (NO necesita --env-file porque las vars están en el build)
 podman run -d \
   --name aluna-ui \
   -p 4176:8080 \
-  --env-file .env \
   aluna-ui:latest
 
 # Con Docker
 docker run -d \
   --name aluna-ui \
   -p 4176:8080 \
-  --env-file .env \
   aluna-ui:latest
 ```
 
-## Variables de entorno
-El contenedor necesita las siguientes variables:
-- `VITE_API_BASE_URL`: URL del backend API (ej: https://aluna-api.deployhero.dev)
+## Configuración del API
+La URL del API backend está definida en `src/config.ts`:
+```typescript
+apiBaseUrl: 'https://aluna-api.deployhero.dev'
+```
 
-**Importante**: Las variables de Vite se embeben en el build, por lo que debes reconstruir la imagen si cambias la URL del API.
+Para cambiar la URL del API, edita el archivo y reconstruye la imagen.
 
 ## Acceder a la aplicación
 Abre tu navegador en: http://localhost:4176
@@ -93,3 +95,13 @@ Caddy automáticamente obtendrá certificados SSL de Let's Encrypt.
 gh repo create aluna-ui --public --description "Interfaz web para predicción de riesgos obstétricos - Frontend React + TypeScript para evaluación de Sepsis, Hipertensión Gestacional y Hemorragia Posparto" --source=. --remote=origin
 #
 git push -u origin main
+
+# podman (sin --env-file)
+podman pod create --name aluna-ui-pod --network aluna-net --publish 4176:8080 && \
+podman rukube play
+podman pod stop aluna-ui-pod && podman pod rm aluna-ui-pod && \
+podman kube play --network aluna-net ~/deployments/aluna-ui/aluna-ui-pod.yaml
+
+# create the pod and the container
+podman pod create --name aluna-ui-pod --network aluna-net --publish 4176:8080 && \
+podman run -d --name aluna-ui --pod aluna-ui-pod
