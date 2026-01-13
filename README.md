@@ -8,11 +8,23 @@
 
 ## 🎯 Funcionalidades Principales
 
-- ✅ **Formulario de Datos Clínicos**: Captura 8 variables obstétricas
+- ✅ **Formulario de Datos Clínicos**: Captura 8 variables obstétricas con validación completa
+- ✅ **Validación en Tiempo Real**: Verificación de rangos, tipos y datos requeridos
 - ✅ **Predicción de 3 Riesgos**: Sepsis, Hipertensión Gestacional, Hemorragia Posparto
 - ✅ **Clasificación de Riesgo**: 4 niveles (Muy Bajo, Bajo, Moderado, Alto)
 - ✅ **Recomendaciones Médicas**: Guías específicas basadas en la predicción
 - ✅ **Interfaz Intuitiva**: Diseño optimizado para uso clínico
+
+## ✅ Validación de Datos
+
+El formulario implementa validación robusta para garantizar la integridad de los datos:
+
+- **Validación en Tiempo Real**: Los errores se muestran mientras el usuario escribe
+- **Prevención de Envío**: El botón se deshabilita si hay datos inválidos
+- **Mensajes Contextuales**: Cada error muestra un mensaje específico en español
+- **Indicadores Visuales**: Campos con error muestran bordes rojos y alertas
+
+Ver documentación completa: [VALIDATION.md](VALIDATION.md) | [TEST_CASES.md](TEST_CASES.md)
 
 ## 🤖 Riesgos Predichos
 
@@ -186,5 +198,3 @@ Este proyecto es privado y está destinado exclusivamente para uso médico profe
 
 Desarrollado con ❤️ para mejorar la atención obstétrica | Enero 2026
 
-# portmapping of the container
-4176:8080

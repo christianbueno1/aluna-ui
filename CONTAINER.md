@@ -85,3 +85,11 @@ your-domain.com {
 ```
 
 Caddy automáticamente obtendrá certificados SSL de Let's Encrypt.
+
+# portmapping of the container
+4176:8080
+# create repo 
+```bash
+gh repo create aluna-ui --public --description "Interfaz web para predicción de riesgos obstétricos - Frontend React + TypeScript para evaluación de Sepsis, Hipertensión Gestacional y Hemorragia Posparto" --source=. --remote=origin
+#
+git push -u origin main
